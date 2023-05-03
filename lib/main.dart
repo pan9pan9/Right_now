@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:math';
+import 'package:http/http.dart' as http;
+import 'package:xml/xml.dart' as xml;
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  runApp(MyApp());
+  test('subway', (){
+    print("test");
+  });
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -19,7 +25,7 @@ class MyApp extends StatelessWidget {
 
 
 class Rightnow extends StatefulWidget {
-  
+
   @override
   _RightnowState createState() => _RightnowState();
 }
@@ -42,23 +48,24 @@ class _RightnowState extends State<Rightnow> {
   Widget build(BuildContext context){
     return Scaffold(
       body: Container(
-        child: GetTimer(),
+        child: GetTime(),
         color: Colors.black,
       ),
     );
   }
 }
 
-class GetTimer extends StatelessWidget {
 
-  @override
+class GetTime extends StatelessWidget {
   var now = DateTime.now();
+  
+  @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('${now.hour}' + ':'+ '${now.minute}' + ':' + '${now.second}',
-      style: TextStyle(
-        color: Colors.white,
-      ),),
+    return Scaffold(
+      body: Container(
+        child: Text('Hi'),
+        color: Colors.black,
+      ),
     );
   }
 }
