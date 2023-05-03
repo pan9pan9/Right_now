@@ -1,100 +1,28 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
+import 'package:xml/xml.dart' as xml;
 import 'package:xml/xml.dart';
-
+import 'package:http/http.dart' as http;
 
 void main() {
-  final bookshelfXml = '''<realtimeStationArrival>
-<RESULT>
-<code>INFO-000</code>
-<developerMessage/>
-<link/>
-<message>정상 처리되었습니다.</message>
-<status>200</status>
-<total>13</total>
-</RESULT>
-<row>
-<rowNum>1</rowNum>
-<selectedCount>3</selectedCount>
-<totalCount>13</totalCount>
-<subwayId>1001</subwayId>
-<updnLine>상행</updnLine>
-<trainLineNm>소요산행 - 외대앞방면</trainLineNm>
-<statnFid>1001000124</statnFid>
-<statnTid>1001000122</statnTid>
-<statnId>1001000123</statnId>
-<statnNm>회기</statnNm>
-<ordkey>01000소요산0</ordkey>
-<subwayList>1001,1063</subwayList>
-<statnList>1001000123,1063075118</statnList>
-<barvlDt>0</barvlDt>
-<btrainNo>0112</btrainNo>
-<bstatnId>190</bstatnId>
-<bstatnNm>소요산</bstatnNm>
-<recptnDt>2023-05-03 15:47:33</recptnDt>
-<arvlMsg2>회기 도착</arvlMsg2>
-<arvlMsg3>회기</arvlMsg3>
-<arvlCd>1</arvlCd>
-</row>
-<row>
-<rowNum>2</rowNum>
-<selectedCount>3</selectedCount>
-<totalCount>13</totalCount>
-<subwayId>1063</subwayId>
-<updnLine>상행</updnLine>
-<trainLineNm>문산행 - 청량리방면</trainLineNm>
-<statnFid>1063075119</statnFid>
-<statnTid>1063075117</statnTid>
-<statnId>1063075118</statnId>
-<statnNm>회기</statnNm>
-<ordkey>01002문산0</ordkey>
-<subwayList>1001,1063,1067</subwayList>
-<statnList>1001000123,1063075118</statnList>
-<barvlDt>0</barvlDt>
-<btrainNo>5092</btrainNo>
-<bstatnId>234</bstatnId>
-<bstatnNm>문산</bstatnNm>
-<recptnDt>2023-05-03 15:47:38</recptnDt>
-<arvlMsg2>[2]번째 전역 (상봉)</arvlMsg2>
-<arvlMsg3>상봉</arvlMsg3>
-<arvlCd>99</arvlCd>
-</row>
-<row>
-<rowNum>3</rowNum>
-<selectedCount>3</selectedCount>
-<totalCount>13</totalCount>
-<subwayId>1067</subwayId>
-<updnLine>상행</updnLine>
-<trainLineNm>청량리행 - 청량리방면</trainLineNm>
-<statnFid>1067080118</statnFid>
-<statnTid>1067080116</statnTid>
-<statnId>1067080117</statnId>
-<statnNm>회기</statnNm>
-<ordkey>01010청량리0</ordkey>
-<subwayList>1001,1063,1067</subwayList>
-<statnList>1001000123,1063075118,1067080117</statnList>
-<barvlDt>0</barvlDt>
-<btrainNo>8060</btrainNo>
-<bstatnId>166</bstatnId>
-<bstatnNm>청량리</bstatnNm>
-<recptnDt>2023-05-03 15:48:27</recptnDt>
-<arvlMsg2>[10]번째 전역 (평내호평)</arvlMsg2>
-<arvlMsg3>평내호평</arvlMsg3>
-<arvlCd>99</arvlCd>
-</row>
-</realtimeStationArrival>''';
 
-  test('subway', () {
-    final document = XmlDocument.parse(bookshelfXml);
+  Future<xml.XmlDocument> fetchXmlData() async {
+    final response = await http.get(Uri.parse('http://swopenapi.seoul.go.kr/api/subway/6a684e6f49646d733130364c4b74466e/xml/realtimeStationArrival/1/3/회기'));
+    return xml.parse(response.body);
+  }
+  
+  test('subway', () async {
+    final document = await fetchXmlData();
     final items = document.findAllElements('row');
     var subway = <Subway>[];
     items.forEach((node) {
       subway.add(Subway.fromXml(node));
     });
-    print(subway.length);
-    subway.forEach((subway){
-      print('${subway.trainLineNm} : ${subway.recptnDt}');
-    });
+    for (var subway in subway) {
+    Text(
+      '${subway.trainLineNm} : ${subway.recptnDt}',
+    );
+  }
   });
 }
 
