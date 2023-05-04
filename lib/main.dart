@@ -57,7 +57,7 @@ class GetTime extends StatelessWidget {
   var now = DateTime.now();
 
   Future<List<Subway>> fetchXmlData() async {
-    final response = await http.get(Uri.parse('http://swopenapi.seoul.go.kr/api/subway/6a684e6f49646d733130364c4b74466e/xml/realtimeStationArrival/1/3/회기'));
+    final response = await http.get(Uri.parse('http://swopenapi.seoul.go.kr/api/subway/6a684e6f49646d733130364c4b74466e/xml/realtimeStationArrival/1/10/회기'));
     final document = xml.parse(response.body);
     final items = document.findAllElements('row');
 
@@ -75,18 +75,46 @@ class GetTime extends StatelessWidget {
     Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-          child: FutureBuilder(
+          color: Colors.black,
+          child: Center(
+            child : FutureBuilder(
             future: fetchXmlData(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 if (snapshot.hasData) {
                   String text = "";
-                  var length2 = snapshot.data?.length;
-                  for(var i = 0; i < length2!; i++){
-                    text += '${snapshot.data![i].trainLineNm} : ${snapshot.data![i].recptnDt}\n';
-                  }
+                  text += '${snapshot.data![9].recptnDt} ';
+                  text += '${snapshot.data![1].recptnDt}';
+                  dynamic firstlinesec = text.substring(37,39);
+                  dynamic firstlinemin = text.substring(34,36);
+                  dynamic firstlinehour = text.substring(31,33);
+                  
+                  dynamic khlinesec = text.substring(17,19);
+                  dynamic khlinemin = text.substring(14,16);
+                  dynamic khlinehour = text.substring(11,13);
+
+                  firstlinesec = int.parse(firstlinesec);
+                  firstlinemin = int.parse(firstlinemin);
+                  firstlinehour = int.parse(firstlinehour);
+                  khlinesec = int.parse(khlinesec);
+                  khlinemin = int.parse(khlinemin);
+                  khlinehour = int.parse(khlinehour);
+                  
+                  var firstlinetime = Duration(hours: firstlinehour, minutes: firstlinemin, seconds: firstlinesec);
+                  var khlinetime = Duration(hours: khlinehour, minutes: khlinemin, seconds: khlinesec);
+                  var nowtime = Duration(hours: now.hour, minutes: now.minute, seconds: now.second);
+
+                  var firstline = firstlinetime.inSeconds - nowtime.inSeconds;
+                  var khline = khlinetime.inSeconds - nowtime.inSeconds;
+                  
                   return Text(
-                    text,
+                    '1호선 청량리행\n$firstline\n경의중앙선 청량리행\n$khline',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'Roboto',
+                      fontSize: 50,
+                      color: Colors.white,
+                    ),
                   );
                 } else {
                     return Text('No data');
@@ -97,8 +125,9 @@ class GetTime extends StatelessWidget {
             },
           ),
         ),
-      );
-    }
+      ),
+    );
+  }
 }
 
 
