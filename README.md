@@ -1,6 +1,6 @@
 # right_now
 
-A new Flutter project.
+회기역 지하철 타이머 앱.
 
 ## Getting Started
 
