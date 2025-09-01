@@ -1,6 +1,8 @@
 # right_now
 
 회기역 지하철 타이머 앱.
+https://hahako.tistory.com/category/Flutter 에서 개발과정을 확인해 보세요
+
 
 ## Getting Started
 
